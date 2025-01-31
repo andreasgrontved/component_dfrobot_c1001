@@ -1,5 +1,7 @@
 # dfrobot_c1001/sensor.py
 
+DOMAIN = "dfrobot_c1001"
+
 import esphome.config_validation as cv
 from esphome import codegen as cg
 from esphome.components import sensor, uart
