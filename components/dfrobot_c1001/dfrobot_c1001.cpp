@@ -19,6 +19,7 @@ void DFRobotC1001Component::setup() {
   // this->human_detection_->configWorkMode(DFRobot_HumanDetection::eSleepMode);
 }
 
+
 void DFRobotC1001Component::loop() {
   // Periodically poll the sensor
   uint32_t now = millis();
