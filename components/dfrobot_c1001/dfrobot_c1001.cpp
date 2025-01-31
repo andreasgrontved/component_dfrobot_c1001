@@ -4,24 +4,19 @@ namespace esphome {
 namespace dfrobot_c1001 {
 
 void DFRobotC1001Component::setup() {
-  // Create the DFRobot library object, using our underlying ESPHome UART stream
-  this->human_detection_ = new DFRobot_HumanDetection(this->parent_);
+  // Construct the DFRobot driver with the underlying UART Stream
+  this->human_ = new DFRobot_HumanDetection(this->parent_);
 
-  // Initialize the sensor
-  uint8_t ret = this->human_detection_->begin();
+  // Initialize
+  uint8_t ret = this->human_->begin();
   if (ret == 0) {
-    ESP_LOGE("dfrobot_c1001", "Failed to initialize DFRobot C1001 sensor!");
+    ESP_LOGE("dfrobot_c1001", "Failed to initialize DFRobot C1001!");
   } else {
-    ESP_LOGI("dfrobot_c1001", "DFRobot C1001 sensor initialized successfully.");
+    ESP_LOGI("dfrobot_c1001", "DFRobot C1001 sensor initialized.");
   }
-
-  // If you want to set the working mode, do it here:
-  // this->human_detection_->configWorkMode(DFRobot_HumanDetection::eSleepMode);
 }
 
-
 void DFRobotC1001Component::loop() {
-  // Periodically poll the sensor
   uint32_t now = millis();
   if (now - this->last_update_ >= this->update_interval_) {
     this->last_update_ = now;
@@ -30,34 +25,34 @@ void DFRobotC1001Component::loop() {
 }
 
 void DFRobotC1001Component::read_sensors_() {
-  // Example: read presence
+  // Example: presence
   if (this->presence_sensor_ != nullptr) {
-    float val = this->human_detection_->smHumanData(DFRobot_HumanDetection::eHumanPresence);
-    this->presence_sensor_->publish_state(val);
+    float presence = this->human_->smHumanData(DFRobot_HumanDetection::eHumanPresence);
+    this->presence_sensor_->publish_state(presence);
   }
 
-  // Movement
+  // movement
   if (this->movement_sensor_ != nullptr) {
-    float val = this->human_detection_->smHumanData(DFRobot_HumanDetection::eHumanMovement);
-    this->movement_sensor_->publish_state(val);
+    float movement = this->human_->smHumanData(DFRobot_HumanDetection::eHumanMovement);
+    this->movement_sensor_->publish_state(movement);
   }
 
-  // Distance
+  // distance
   if (this->distance_sensor_ != nullptr) {
-    float val = this->human_detection_->smHumanData(DFRobot_HumanDetection::eHumanDistance);
-    this->distance_sensor_->publish_state(val);
+    float distance = this->human_->smHumanData(DFRobot_HumanDetection::eHumanDistance);
+    this->distance_sensor_->publish_state(distance);
   }
 
-  // Heart Rate
+  // heart rate
   if (this->heart_rate_sensor_ != nullptr) {
-    float val = this->human_detection_->getHeartRate();
-    this->heart_rate_sensor_->publish_state(val);
+    float hr = this->human_->getHeartRate();
+    this->heart_rate_sensor_->publish_state(hr);
   }
 
-  // Breathe Value
-  if (this->breathe_value_sensor_ != nullptr) {
-    float val = this->human_detection_->getBreatheValue();
-    this->breathe_value_sensor_->publish_state(val);
+  // breathe
+  if (this->breathe_sensor_ != nullptr) {
+    float breathe = this->human_->getBreatheValue();
+    this->breathe_sensor_->publish_state(breathe);
   }
 }
 
